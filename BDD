@@ -1,0 +1,173 @@
+#------------------------------------------------------------
+#        Script MySQL.
+#------------------------------------------------------------
+
+
+#------------------------------------------------------------
+# Table: type
+#------------------------------------------------------------
+
+CREATE TABLE type(
+        id_t   Int NOT NULL ,
+        type_t Char (5) NOT NULL
+	,CONSTRAINT type_PK PRIMARY KEY (id_t)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: livre
+#------------------------------------------------------------
+
+CREATE TABLE livre(
+        id_l             Int NOT NULL ,
+        livre            Char (5) NOT NULL ,
+        titre_l          Char (5) NOT NULL ,
+        annee_parution_l Char (5) NOT NULL ,
+        resume_l         Char (5) NOT NULL ,
+        id_t             Int
+	,CONSTRAINT livre_PK PRIMARY KEY (id_l)
+
+	,CONSTRAINT livre_type_FK FOREIGN KEY (id_t) REFERENCES type(id_t)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: pays
+#------------------------------------------------------------
+
+CREATE TABLE pays(
+        id_p  Int NOT NULL ,
+        pays  Char (5) NOT NULL ,
+        ref_p Int NOT NULL
+	,CONSTRAINT pays_PK PRIMARY KEY (id_p)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: edition
+#------------------------------------------------------------
+
+CREATE TABLE edition(
+        id_e    Int NOT NULL ,
+        edition Char (5) NOT NULL ,
+        nom_e   Char (5) NOT NULL
+	,CONSTRAINT edition_PK PRIMARY KEY (id_e)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: inscrit
+#------------------------------------------------------------
+
+CREATE TABLE inscrit(
+        id_i        Int NOT NULL ,
+        inscrit     Char (5) NOT NULL ,
+        nom_i       Char (5) NOT NULL ,
+        prenom_i    Char (5) NOT NULL ,
+        adresse     Float NOT NULL ,
+        telephone_a Int NOT NULL ,
+        mail_a      Int NOT NULL
+	,CONSTRAINT inscrit_PK PRIMARY KEY (id_i)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: emprunt
+#------------------------------------------------------------
+
+CREATE TABLE emprunt(
+        id_emp     Int NOT NULL ,
+        emprunt    Char (5) NOT NULL ,
+        date_emp   Date NOT NULL ,
+        nombre_emp Int NOT NULL ,
+        delais_emp Int NOT NULL
+	,CONSTRAINT emprunt_PK PRIMARY KEY (id_emp)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: exemplaire
+#------------------------------------------------------------
+
+CREATE TABLE exemplaire(
+        id_ex Int NOT NULL
+	,CONSTRAINT exemplaire_PK PRIMARY KEY (id_ex)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: auteur
+#------------------------------------------------------------
+
+CREATE TABLE auteur(
+        id_aut             Char (5) NOT NULL ,
+        nom_aut            Char (5) NOT NULL ,
+        prenom_aut         Char (5) NOT NULL ,
+        date_naissance_aut Date NOT NULL ,
+        pays_aut           Char (5) NOT NULL ,
+        id_p               Int NOT NULL
+	,CONSTRAINT auteur_PK PRIMARY KEY (id_aut)
+
+	,CONSTRAINT auteur_pays_FK FOREIGN KEY (id_p) REFERENCES pays(id_p)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: profil
+#------------------------------------------------------------
+
+CREATE TABLE profil(
+        id_emp Int NOT NULL ,
+        id_i   Int NOT NULL
+	,CONSTRAINT profil_PK PRIMARY KEY (id_emp,id_i)
+
+	,CONSTRAINT profil_emprunt_FK FOREIGN KEY (id_emp) REFERENCES emprunt(id_emp)
+	,CONSTRAINT profil_inscrit0_FK FOREIGN KEY (id_i) REFERENCES inscrit(id_i)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: appartient
+#------------------------------------------------------------
+
+CREATE TABLE appartient(
+        id_e   Int NOT NULL ,
+        id_ex  Int NOT NULL ,
+        id_emp Int NOT NULL
+	,CONSTRAINT appartient_PK PRIMARY KEY (id_e,id_ex,id_emp)
+
+	,CONSTRAINT appartient_edition_FK FOREIGN KEY (id_e) REFERENCES edition(id_e)
+	,CONSTRAINT appartient_exemplaire0_FK FOREIGN KEY (id_ex) REFERENCES exemplaire(id_ex)
+	,CONSTRAINT appartient_emprunt1_FK FOREIGN KEY (id_emp) REFERENCES emprunt(id_emp)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: avoir
+#------------------------------------------------------------
+
+CREATE TABLE avoir(
+        id_emp Int NOT NULL ,
+        id_ex  Int NOT NULL ,
+        id_l   Int NOT NULL
+	,CONSTRAINT avoir_PK PRIMARY KEY (id_emp,id_ex,id_l)
+
+	,CONSTRAINT avoir_emprunt_FK FOREIGN KEY (id_emp) REFERENCES emprunt(id_emp)
+	,CONSTRAINT avoir_exemplaire0_FK FOREIGN KEY (id_ex) REFERENCES exemplaire(id_ex)
+	,CONSTRAINT avoir_livre1_FK FOREIGN KEY (id_l) REFERENCES livre(id_l)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: vient de
+#------------------------------------------------------------
+
+CREATE TABLE vient_de(
+        id_aut Char (5) NOT NULL ,
+        id_l   Int NOT NULL
+	,CONSTRAINT vient_de_PK PRIMARY KEY (id_aut,id_l)
+
+	,CONSTRAINT vient_de_auteur_FK FOREIGN KEY (id_aut) REFERENCES auteur(id_aut)
+	,CONSTRAINT vient_de_livre0_FK FOREIGN KEY (id_l) REFERENCES livre(id_l)
+)ENGINE=InnoDB;
+
